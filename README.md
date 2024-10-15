@@ -76,6 +76,12 @@ query {
     owner {
       login
       id
+      avatar_url
+      url
+      html_url
+      repos_url
+      type
+      site_admin
     }
   }
 }

@@ -38,12 +38,21 @@ export class GitHubService {
   public async listRepositories(): Promise<Repository[]> {
     try {
       const response = await this.axiosInstance.get('/user/repos');
-      return response.data.map((repo: Repository) => ({
+      return response.data.map((repo: any) => ({
         name: repo.name,
         size: repo.size,
-        owner: repo.owner,
+        owner: {
+          login: repo.owner.login || '',
+          id: repo.owner.id,
+          avatar_url: repo.owner.avatar_url || '',
+          url: repo.owner.url,
+          html_url: repo.owner.html_url || '',
+          repos_url: repo.owner.repos_url,
+          type: repo.owner.type,
+          site_admin: repo.owner.site_admin || false,
+        },
       }));
-    } catch (error : any) {
+    } catch (error: any) {
       console.error('Error fetching repositories:', error.message);
       throw new Error('Error fetching repositories');
     }
