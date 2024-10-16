@@ -1,23 +1,17 @@
 import dotenv from 'dotenv';
-import * as path from "node:path";
-import * as process from "node:process";
+import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'url';
+import { env } from 'node:process';
+
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const envPath = path.resolve(__dirname, '.env.staging');
-const result = dotenv.config({ path: envPath });
+const __dirname = dirname(__filename);
+const envPath = resolve(__dirname, '.env.staging');
 
-if (result.error) {
-    console.error(`Failed to load environment variables from ${envPath}:`, result.error);
-    throw new Error(`Could not load .env.staging file`);
-}
-console.log("Loaded environment file:", envPath);
+//init environment variables
+dotenv.config({ path: envPath });
 
-const GITHUB_API_URL = process.env.GITHUB_API_URL;
-const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
-
-if (!GITHUB_API_URL || !GITHUB_TOKEN) {
-    throw new Error('Environment variables GITHUB_API_URL or GITHUB_TOKEN are missing');
+if (!env.GITHUB_API_URL || !env.GITHUB_TOKEN) {
+    throw new Error('Missing GITHUB_API_URL or GITHUB_TOKEN in environment variables');
 }
 
-export { GITHUB_API_URL, GITHUB_TOKEN };
+export const { GITHUB_API_URL, GITHUB_TOKEN } = env;

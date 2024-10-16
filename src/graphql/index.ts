@@ -7,14 +7,14 @@ export default class GraphQLServer {
   private server: ApolloServer;
 
   constructor() {
-    // Initialize the ApolloServer with the typeDefs and resolvers
+    // init the apollo server with the typeDefs and resolvers
     this.server = new ApolloServer({
       typeDefs,
       resolvers,
     });
   }
 
-  // Method to start the standalone server
+  // Method to start the server
   public async startServer(): Promise<string | void> {
     try {
       const { url } = await startStandaloneServer(this.server, {
@@ -24,7 +24,7 @@ export default class GraphQLServer {
       return url; // Return the URL if the server starts successfully
     } catch (error) {
       console.error('Error starting server:', error);
-      return; // Return void in case of an error
+      return; // Return void in case of error
     }
   }
 }

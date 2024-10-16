@@ -11,7 +11,7 @@ export const runWorker = (repoName: string, pathToScan: string, login: string, t
         const workerPath = path.resolve(__dirname, 'worker.mjs');
 
         const worker = new Worker(workerPath, {
-            workerData: { repoName, path: pathToScan, login, token },  // Pass the necessary data to the worker
+            workerData: { repoName, path: pathToScan, login, token },  // Pass the necessary data into the worker
         });
 
         worker.on('message', (message) => {
@@ -19,7 +19,7 @@ export const runWorker = (repoName: string, pathToScan: string, login: string, t
                 console.error('Worker error:', message.error);
                 reject(new Error(message.error));
             } else {
-                resolve(message);  // Return the result (fileCount and ymlFileContent)
+                resolve(message);  // Return the result (fileCount , ymlFileContent)
             }
         });
 

@@ -12,18 +12,18 @@ export class GitHubService {
       throw new Error('GitHub token is required');
     }
 
-    this.token = token;  // Assign the token to a class variable
+    this.token = token;
 
-    // Initialize Axios instance with base URL and Authorization header
+    // init Axios instance with base URL and Authorization header
     this.axiosInstance = axios.create({
       baseURL: baseUrl,
       headers: {
-        Authorization: `Bearer ${this.token}`,  // Use the token correctly in the request headers
+        Authorization: `Bearer ${this.token}`,
       },
     });
   }
 
-  // Helper method to get the authenticated user's login (username)
+  // Helper method to get the authenticated user login (username)
   private async getUserLogin(): Promise<string> {
     try {
       const response = await this.axiosInstance.get('/user');
@@ -82,16 +82,13 @@ export class GitHubService {
   // Method to get repository details and fetch the first .yml file content
   public async getRepositoryDetails(repoName: string): Promise<RepositoryDetail> {
     try {
-      const login = await this.getUserLogin();  // Get the authenticated user's login (username)
+      const login = await this.getUserLogin();  // Get the authenticated user login (username)
       const repoResponse = await this.axiosInstance.get(`/repos/${login}/${repoName}`);
       const { size, private: isPrivate, owner: Owner } = repoResponse.data;
 
-      // Use workers for file scanning and parallel execution with concurrency control
+      // Use workers to scan the repo tree for better performance, with a config max worker limit
       const tasks = [() => runWorker(repoName, '', login, this.token)];
       const [{ fileCount, ymlFileContent }] = await limitConcurrency(tasks, 4);
-
-      // Logging the result for debugging
-      console.log(`fileCount: ${fileCount}, ymlFileContent: ${ymlFileContent}`);
 
       // Fetch webhooks for the repository
       const webhooks = await this.getWebhooks(`/repos/${login}/${repoName}/hooks`);
